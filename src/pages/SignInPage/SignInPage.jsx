@@ -1,9 +1,9 @@
-import { AuthForm } from "../../modules/AuthForm/AuthForm";
+import { Auth } from "../../modules/Auth/Auth";
 
 export const SignInPage = () => {
   return (
     <>
-      <AuthForm />
+      <Auth />
     </>
   );
 };

@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../core/context/AuthContext";
 import { makeAuth } from "../../core/api/users";
-import { Form } from "./components/Form";
+import { AuthForm } from "./components/AuthForm";
 
-export const AuthForm = () => {
+export const Auth = () => {
   const defaultValues = {
     email: "",
     password: "",
@@ -21,11 +21,14 @@ export const AuthForm = () => {
 
   const { login } = useContext(AuthContext);
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
     try {
       await makeAuth(data).then((res) => {
         const userData = res.data.data;
         login(userData.accessToken, userData.user);
+        navigate(`/`);
         reset();
       });
     } catch (error) {
@@ -43,7 +46,7 @@ export const AuthForm = () => {
 
   return (
     <>
-      <Form
+      <AuthForm
         control={control}
         getValues={getValues}
         handleSubmit={handleSubmit}

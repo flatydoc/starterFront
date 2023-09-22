@@ -1,23 +1,37 @@
-import { TasksList } from "./components/TasksList";
-import { Form } from "./components/Form";
-import { getAll } from "./core/api/tasks";
-import { add } from "./core/api/tasks";
-import { useState, useEffect, useCallback, useRef, useContext } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
-
-import { AuthContext } from "../../core/context/AuthContext";
+import { get, edit, remove } from "./core/api/events.js";
+import { EditEventForm } from "./components/EditEventForm.jsx";
 import { Toast } from "primereact/toast";
+import { useParams, useNavigate } from "react-router-dom";
 
-export const Tasks = () => {
-  const { user } = useContext(AuthContext);
+export const EditEvent = () => {
+  const [event, setEvent] = useState();
+
+  const { eventId } = useParams();
+  const navigate = useNavigate();
+  const getEvent = useCallback(async () => {
+    await get(eventId)
+      .then((res) => {
+        setEvent(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [eventId]);
+
+  useEffect(() => {
+    getEvent();
+  }, [getEvent]);
 
   const defaultValues = {
     title: "",
     text: "",
-    owner: user.id,
+    date: "",
+    place: "",
+    price: "",
+    id: eventId,
   };
-
-  const toast = useRef(null);
 
   const {
     control,
@@ -27,12 +41,17 @@ export const Tasks = () => {
     reset,
   } = useForm({ defaultValues });
 
+  useEffect(() => {
+    reset(event);
+  }, [event, reset]);
+
+  const toast = useRef(null);
+
   const onSubmit = async (data) => {
+    data.id = eventId;
     try {
-      await add(data).then(() => {
+      await edit(data).then(() => {
         showSuccess();
-        getAllTasks();
-        reset();
       });
     } catch (error) {
       showError();
@@ -64,33 +83,27 @@ export const Tasks = () => {
     });
   };
 
-  const [tasks, setTasks] = useState([]);
-
-  const getAllTasks = useCallback(async () => {
-    await getAll()
-      .then((res) => {
-        setTasks(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
+  const deleteEvent = async () => {
+    try {
+      await remove(eventId).then(() => {
+        // navigate("/");
       });
-  }, []);
-
-  useEffect(() => {
-    getAllTasks();
-  }, [getAllTasks]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <div>
+    <>
       <Toast ref={toast} />
-      <Form
+      <EditEventForm
         control={control}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
         errors={errors}
         getFormErrorMessage={getFormErrorMessage}
       />
-      <TasksList tasks={tasks} user={user} />
-    </div>
+      <button onClick={deleteEvent}>delete</button>
+    </>
   );
 };

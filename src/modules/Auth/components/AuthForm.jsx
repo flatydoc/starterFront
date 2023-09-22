@@ -1,9 +1,12 @@
 import { Controller } from "react-hook-form";
+
 import { InputText } from "primereact/inputtext";
+import { Password } from "primereact/password";
 import classNames from "classnames";
 
-export const Form = ({
+export const AuthForm = ({
   control,
+  getValues,
   handleSubmit,
   onSubmit,
   getFormErrorMessage,
@@ -13,9 +16,9 @@ export const Form = ({
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
-          name="title"
+          name="email"
           control={control}
-          rules={{ required: "Header is required." }}
+          rules={{ required: "Email is required." }}
           render={({ field, fieldState }) => (
             <>
               <label
@@ -29,15 +32,16 @@ export const Form = ({
                   className={classNames({ "p-invalid": fieldState.error })}
                   onChange={(e) => field.onChange(e.target.value)}
                 />
-                <label htmlFor={field.name}>Header</label>
+                <label htmlFor={field.name}>Email</label>
               </span>
               {getFormErrorMessage(field.name)}
             </>
           )}
         />
         <Controller
-          name="text"
+          name="password"
           control={control}
+          rules={{ required: "Password is required." }}
           render={({ field, fieldState }) => (
             <>
               <label
@@ -45,18 +49,21 @@ export const Form = ({
                 className={classNames({ "p-error": errors.value })}
               ></label>
               <span className="p-float-label">
-                <InputText
+                <Password
+                  toggleMask
                   id={field.name}
-                  value={field.value}
+                  {...field}
+                  inputRef={field.ref}
                   className={classNames({ "p-invalid": fieldState.error })}
-                  onChange={(e) => field.onChange(e.target.value)}
+                  feedback={false}
                 />
-                <label htmlFor={field.name}>Text</label>
+                <label htmlFor={field.name}>Password</label>
               </span>
+              {getFormErrorMessage(field.name)}
             </>
           )}
         />
-        <button type="submit">Add new</button>
+        <button type="submit">Sign In</button>
       </form>
     </>
   );

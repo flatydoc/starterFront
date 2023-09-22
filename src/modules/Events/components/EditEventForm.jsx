@@ -1,12 +1,11 @@
 import { Controller } from "react-hook-form";
-
 import { InputText } from "primereact/inputtext";
-import { Password } from "primereact/password";
+import { Calendar } from "primereact/calendar";
+import { InputNumber } from "primereact/inputnumber";
 import classNames from "classnames";
 
-export const Form = ({
+export const EditEventForm = ({
   control,
-  getValues,
   handleSubmit,
   onSubmit,
   getFormErrorMessage,
@@ -16,9 +15,9 @@ export const Form = ({
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
-          name="name"
+          name="title"
           control={control}
-          rules={{ required: "Name is required." }}
+          rules={{ required: "Header is required." }}
           render={({ field, fieldState }) => (
             <>
               <label
@@ -32,16 +31,15 @@ export const Form = ({
                   className={classNames({ "p-invalid": fieldState.error })}
                   onChange={(e) => field.onChange(e.target.value)}
                 />
-                <label htmlFor={field.name}>Name</label>
+                <label htmlFor={field.name}>Header</label>
               </span>
               {getFormErrorMessage(field.name)}
             </>
           )}
         />
         <Controller
-          name="email"
+          name="text"
           control={control}
-          rules={{ required: "Email is required." }}
           render={({ field, fieldState }) => (
             <>
               <label
@@ -55,16 +53,14 @@ export const Form = ({
                   className={classNames({ "p-invalid": fieldState.error })}
                   onChange={(e) => field.onChange(e.target.value)}
                 />
-                <label htmlFor={field.name}>Email</label>
+                <label htmlFor={field.name}>Text</label>
               </span>
-              {getFormErrorMessage(field.name)}
             </>
           )}
         />
         <Controller
-          name="password"
+          name="date"
           control={control}
-          rules={{ required: "Password is required." }}
           render={({ field, fieldState }) => (
             <>
               <label
@@ -72,24 +68,21 @@ export const Form = ({
                 className={classNames({ "p-error": errors.value })}
               ></label>
               <span className="p-float-label">
-                <Password
-                  toggleMask
-                  id={field.name}
-                  {...field}
-                  inputRef={field.ref}
+                <Calendar
+                  inputId={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                  dateFormat="dd/mm/yy"
                   className={classNames({ "p-invalid": fieldState.error })}
-                  feedback={false}
                 />
-                <label htmlFor={field.name}>Password</label>
+                <label htmlFor={field.name}>Date</label>
               </span>
-              {getFormErrorMessage(field.name)}
             </>
           )}
         />
         <Controller
-          name="repeatedPassword"
+          name="place"
           control={control}
-          rules={{ required: "Repeat password." }}
           render={({ field, fieldState }) => (
             <>
               <label
@@ -97,21 +90,42 @@ export const Form = ({
                 className={classNames({ "p-error": errors.value })}
               ></label>
               <span className="p-float-label">
-                <Password
-                  toggleMask
+                <InputText
                   id={field.name}
-                  {...field}
-                  inputRef={field.ref}
+                  value={field.value}
                   className={classNames({ "p-invalid": fieldState.error })}
-                  feedback={false}
+                  onChange={(e) => field.onChange(e.target.value)}
                 />
-                <label htmlFor={field.name}>Repeat password</label>
+                <label htmlFor={field.name}>Place</label>
               </span>
-              {getFormErrorMessage(field.name)}
             </>
           )}
         />
-        <button type="submit">Sign up for free</button>
+        <Controller
+          name="price"
+          control={control}
+          render={({ field, fieldState }) => (
+            <>
+              <label
+                htmlFor={field.name}
+                className={classNames({ "p-error": errors.value })}
+              ></label>
+              <span className="p-float-label">
+                <InputNumber
+                  id={field.name}
+                  inputRef={field.ref}
+                  value={field.value}
+                  onBlur={field.onBlur}
+                  onValueChange={(e) => field.onChange(e)}
+                  useGrouping={false}
+                  inputClassName={classNames({ "p-invalid": fieldState.error })}
+                />
+                <label htmlFor={field.name}>Price</label>
+              </span>
+            </>
+          )}
+        />
+        <button type="submit">Edit</button>
       </form>
     </>
   );

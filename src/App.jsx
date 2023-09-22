@@ -1,4 +1,12 @@
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
 
 import { AuthContext } from "./core/context/AuthContext";
 import { useAuth } from "./core/hooks/useAuth";
@@ -8,42 +16,42 @@ import { Layout } from "./pages/Layout/Layout";
 import { HomePage } from "./pages/HomePage/HomePage";
 import { SignInPage } from "./pages/SignInPage/SignInPage";
 import { SignUpPage } from "./pages/SignUpPage/SignUpPage";
-import { TasksPage } from "./pages/TasksPage/TasksPage";
-import { AddTaskPage } from "./pages/TasksPage/AddTaskPage/AddTaskPage";
-import { EditTaskPage } from "./pages/TasksPage/EditTaskPage/EditTaskPage";
+import { EventsPage } from "./pages/EventsPage/EventsPage";
 
 export const App = () => {
   const { login, leave, token, user } = useAuth();
   const isLogin = !!token;
 
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="events/*" element={<EventsPage />} />
+        </Route>
+        <Route path="signin" element={<SignInPage />} />
+        <Route path="signup" element={<SignUpPage />} />
+        <Route path="*" element={<ErrorPage />} />
+      </>
+    )
+  );
+
   return (
-    <BrowserRouter>
-      <AuthContext.Provider value={{ login, leave, token, user, isLogin }}>
-        <>
+    // <BrowserRouter>
+    <AuthContext.Provider value={{ login, leave, token, user, isLogin }}>
+      {/* <>
           <Routes>
-            <Route
-              path="/"
-              element={
-                !isLogin ? <Navigate to="/signin" replace /> : <Layout />
-              }
-            >
+            <Route path="/" element={<Layout />}>
               <Route index element={<HomePage />} />
-              <Route path="/tasks" element={<TasksPage />} />
-              <Route path="/tasks/add" element={<AddTaskPage />} />
-              <Route path="/tasks/:id" element={<EditTaskPage />} />
+              <Route path="events/*" element={<EventsPage />} />
             </Route>
-            <Route
-              path="/signin"
-              element={isLogin ? <Navigate to="/" replace /> : <SignInPage />}
-            />
-            <Route
-              path="/signup"
-              element={isLogin ? <Navigate to="/" replace /> : <SignUpPage />}
-            />
-            <Route path="/*" element={<ErrorPage />} />
+            <Route path="signin" element={<SignInPage />} />
+            <Route path="signup" element={<SignUpPage />} />
+            <Route path="*" element={<ErrorPage />} />
           </Routes>
-        </>
-      </AuthContext.Provider>
-    </BrowserRouter>
+        </> */}
+      <RouterProvider router={router} />
+    </AuthContext.Provider>
+    // </BrowserRouter>
   );
 };

@@ -1,9 +1,9 @@
-import { RegistrationForm } from "../../modules/RegistrationForm/RegistrationForm";
+import { Registration } from "../../modules/Registration/Registration";
 
 export const SignUpPage = () => {
   return (
     <>
-      <RegistrationForm />
+      <Registration />
     </>
   );
 };

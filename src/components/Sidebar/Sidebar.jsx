@@ -11,9 +11,9 @@ export const Sidebar = () => {
       // expanded: true,
       items: [
         {
-          label: "Tasks",
+          label: "Events",
           icon: "pi pi-database",
-          command: () => navigate(`/tasks`),
+          command: () => navigate(`/events`),
         },
       ],
     },
