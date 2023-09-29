@@ -1,0 +1,16 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formItem {
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  input {
+    width: 100%;
+  }
+}

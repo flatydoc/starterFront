@@ -1,0 +1,26 @@
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 400px;
+
+  margin: 20px;
+  padding: 30px;
+  border: 1px solid #ced4da;
+  border-radius: 20px;
+}
+
+.title {
+  font-size: 2rem;
+}
+
+.link {
+  margin-left: 5px;
+
+  color: var(--secondary);
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

@@ -1,9 +1,9 @@
 import { Events } from "../../../modules/Events/Events";
 
-export const EventsListPage = ({ events }) => {
+export const EventsListPage = () => {
   return (
     <div>
-      <Events events={events} />
+      <Events />
     </div>
   );
 };

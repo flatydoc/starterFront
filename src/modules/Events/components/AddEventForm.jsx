@@ -1,9 +1,8 @@
 import { Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Calendar } from "primereact/calendar";
-
 import { InputNumber } from "primereact/inputnumber";
-
+import { Mention } from "primereact/mention";
 import classNames from "classnames";
 
 export const AddEventForm = ({
@@ -12,6 +11,9 @@ export const AddEventForm = ({
   onSubmit,
   getFormErrorMessage,
   errors,
+  onSearch,
+  suggestions,
+  itemTemplate,
 }) => {
   return (
     <>
@@ -83,6 +85,28 @@ export const AddEventForm = ({
           )}
         />
         <Controller
+          name="time"
+          control={control}
+          render={({ field, fieldState }) => (
+            <>
+              <label
+                htmlFor={field.name}
+                className={classNames({ "p-error": errors.value })}
+              ></label>
+              <span className="p-float-label">
+                <Calendar
+                  inputId={field.name}
+                  value={field.value}
+                  timeOnly
+                  onChange={field.onChange}
+                  className={classNames({ "p-invalid": fieldState.error })}
+                />
+                <label htmlFor={field.name}>Time</label>
+              </span>
+            </>
+          )}
+        />
+        <Controller
           name="place"
           control={control}
           render={({ field, fieldState }) => (
@@ -125,6 +149,27 @@ export const AddEventForm = ({
                 <label htmlFor={field.name}>Price</label>
               </span>
             </>
+          )}
+        />
+        <Controller
+          name="artists"
+          control={control}
+          render={({ field, fieldState }) => (
+            <span className="p-float-label">
+              <Mention
+                id={field.name}
+                field="nickname"
+                {...field}
+                rows={5}
+                cols={40}
+                className={classNames({ "p-invalid": fieldState.error })}
+                suggestions={suggestions}
+                onSearch={onSearch}
+                placeholder="Please enter @ to mention artists"
+                itemTemplate={itemTemplate}
+              />
+              <label htmlFor={field.name}>add artists</label>
+            </span>
           )}
         />
         <button type="submit">Add new</button>

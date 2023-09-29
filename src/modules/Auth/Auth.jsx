@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../core/context/AuthContext";
 import { makeAuth } from "../../core/api/users";
 import { AuthForm } from "./components/AuthForm";
+import { Message } from "primereact/message";
+import styles from "./Auth.module.scss";
 
 export const Auth = () => {
   const defaultValues = {
@@ -15,24 +17,28 @@ export const Auth = () => {
     control,
     formState: { errors },
     handleSubmit,
-    getValues,
-    reset,
   } = useForm({ defaultValues });
 
   const { login } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+
+  const [serverError, setServerError] = useState();
+
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       await makeAuth(data).then((res) => {
         const userData = res.data.data;
         login(userData.accessToken, userData.user);
+        setLoading(false);
         navigate(`/`);
-        reset();
       });
     } catch (error) {
-      console.log(error);
+      setServerError(error.response.data.message);
+      setLoading(false);
     }
   };
 
@@ -45,16 +51,23 @@ export const Auth = () => {
   };
 
   return (
-    <>
+    <div className={styles.formWrapper}>
+      <h2 className={styles.title}>Log in</h2>
       <AuthForm
         control={control}
-        getValues={getValues}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
         errors={errors}
         getFormErrorMessage={getFormErrorMessage}
+        loading={loading}
       />
-      <NavLink to="/signup">Sign up</NavLink>
-    </>
+      {serverError && <Message severity="error" text={serverError} />}
+      <p>
+        <span style={{ color: "#6c757d" }}>Don't have an account yet?</span>
+        <NavLink className={styles.link} to="/signup">
+          Sign up
+        </NavLink>
+      </p>
+    </div>
   );
 };

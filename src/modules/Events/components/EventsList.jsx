@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import styles from "./EventsList.module.scss";
+import { Event } from "./Event/Event";
 
 export const EventsList = ({ events }) => {
   const navigate = useNavigate();
@@ -7,14 +9,18 @@ export const EventsList = ({ events }) => {
     navigate(`/events/${id}`, { state: { id } });
   };
 
-  return (
-    <>
-      {events.map((event, i) => (
-        <div key={event.id}>
-          <div>{event.title}</div>
-          <button onClick={() => handleClick(event.id)}>edit</button>
-        </div>
-      ))}
-    </>
-  );
+  let eventElements = events?.map((e, i) => (
+    <Event
+      id={e.id}
+      title={e.title}
+      key={i}
+      text={e.text}
+      data={e.date}
+      place={e.place}
+      price={e.price}
+      handleClick={handleClick}
+    />
+  ));
+
+  return <div className={styles.list}>{eventElements}</div>;
 };

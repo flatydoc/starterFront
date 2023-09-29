@@ -1,15 +1,16 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { useForm } from "react-hook-form";
-import { get, edit, remove } from "./core/api/events.js";
+import { get, editEvent, removeEvent } from "./core/api/events.js";
 import { EditEventForm } from "./components/EditEventForm.jsx";
 import { Toast } from "primereact/toast";
 import { useParams, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../core/context/AuthContext";
 
 export const EditEvent = () => {
   const [event, setEvent] = useState();
-
+  const { user } = useContext(AuthContext);
   const { eventId } = useParams();
-  const navigate = useNavigate();
+
   const getEvent = useCallback(async () => {
     await get(eventId)
       .then((res) => {
@@ -27,7 +28,12 @@ export const EditEvent = () => {
   const defaultValues = {
     title: "",
     text: "",
+    poster: "",
     date: "",
+    time: "",
+    tags: [],
+    photos: [],
+    artists: [],
     place: "",
     price: "",
     id: eventId,
@@ -37,7 +43,6 @@ export const EditEvent = () => {
     control,
     formState: { errors },
     handleSubmit,
-    getValues,
     reset,
   } = useForm({ defaultValues });
 
@@ -50,7 +55,7 @@ export const EditEvent = () => {
   const onSubmit = async (data) => {
     data.id = eventId;
     try {
-      await edit(data).then(() => {
+      await editEvent(data).then(() => {
         showSuccess();
       });
     } catch (error) {
@@ -85,7 +90,7 @@ export const EditEvent = () => {
 
   const deleteEvent = async () => {
     try {
-      await remove(eventId).then(() => {
+      await removeEvent(eventId).then(() => {
         // navigate("/");
       });
     } catch (error) {
@@ -103,7 +108,7 @@ export const EditEvent = () => {
         errors={errors}
         getFormErrorMessage={getFormErrorMessage}
       />
-      <button onClick={deleteEvent}>delete</button>
+      {user?.isAdmin && <button onClick={deleteEvent}>delete</button>}
     </>
   );
 };

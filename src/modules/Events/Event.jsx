@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { get, subscribe } from "./core/api/events.js";
+
+import { AuthContext } from "../../core/context/AuthContext";
+import { useContext } from "react";
 
 import { EventInfo } from "./components/EventInfo";
 
@@ -8,6 +11,7 @@ export const Event = () => {
   const [event, setEvent] = useState();
 
   const { eventId } = useParams();
+  const { user } = useContext(AuthContext);
 
   const getEvent = useCallback(async () => {
     await get(eventId)
@@ -38,6 +42,7 @@ export const Event = () => {
 
   return (
     <div>
+      {user?.isAdmin && <NavLink to={`/events/${eventId}/edit`}>Edit</NavLink>}
       <EventInfo event={event} subscribeToEvent={subscribeToEvent} />
     </div>
   );

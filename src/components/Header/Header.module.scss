@@ -1,0 +1,18 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(10px);
+
+  padding: 20px 20px;
+  height: 70px;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
