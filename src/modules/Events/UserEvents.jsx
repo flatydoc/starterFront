@@ -1,15 +1,14 @@
 import { EventsList } from "./components/EventsList";
 
-import { AuthContext } from "../../core/context/AuthContext";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { getAll } from "./core/api/events.js";
+import { useCallback, useEffect, useState } from "react";
 
-export const Events = () => {
+import { getEventsByUserId } from "./core/api/events.js";
+
+export const UserEvents = () => {
   const [events, setEvents] = useState([]);
 
   const getAllEvents = useCallback(async () => {
-    await getAll()
+    await getEventsByUserId()
       .then((res) => {
         setEvents(res.data);
       })
@@ -22,11 +21,8 @@ export const Events = () => {
     getAllEvents();
   }, [getAllEvents]);
 
-  const { user } = useContext(AuthContext);
-
   return (
     <div>
-      {user?.isAdmin && <NavLink to={`/events/add`}>Add</NavLink>}
       <EventsList events={events} />
     </div>
   );

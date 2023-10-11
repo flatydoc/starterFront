@@ -20,11 +20,8 @@ export const Auth = () => {
   } = useForm({ defaultValues });
 
   const { login } = useContext(AuthContext);
-
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(false);
-
   const [serverError, setServerError] = useState();
 
   const onSubmit = async (data) => {

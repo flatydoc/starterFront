@@ -9,6 +9,10 @@ export const get = (id) => {
   return api.get(`/events/${id}`);
 };
 
+export const getEventsByUserId = () => {
+  return authApi.get("/events/getEventsByUserId");
+};
+
 export const addEvent = (data) => {
   return authApi.post("/events/add", data);
 };

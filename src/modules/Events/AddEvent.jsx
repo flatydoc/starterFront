@@ -3,12 +3,15 @@ import { useForm } from "react-hook-form";
 import { AddEventForm } from "./components/AddEventForm";
 import { Toast } from "primereact/toast";
 import { addEvent } from "./core/api/events.js";
-import { addArtist } from "../Artists/core/api/artists.js";
 import { useState, useCallback, useEffect } from "react";
 import { getAll } from "../Artists/core/api/artists.js";
+import { getCategories } from "../Categories/core/api/categories.js";
+import { useNavigate } from "react-router-dom";
 
 export const AddEvent = () => {
   const [artists, setArtists] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
 
   const getAllArtists = useCallback(async () => {
     await getAll()
@@ -27,12 +30,12 @@ export const AddEvent = () => {
   const defaultValues = {
     title: "",
     text: "",
-    poster: "",
-    date: "",
-    time: "",
-    tags: [],
+    posterUrl: "",
+    // date: "",
+    // time: "",
+    category: "",
     photos: [],
-    artists: [],
+    artists: "",
     place: "",
     price: "",
   };
@@ -47,12 +50,26 @@ export const AddEvent = () => {
       suggestions = [...artists];
     } else {
       suggestions = artists.filter((artist) => {
-        return artist.nickname.toLowerCase().startsWith(query.toLowerCase());
+        return artist.nickname;
       });
     }
 
     setSuggestions(suggestions);
   };
+
+  const getAllCategories = useCallback(async () => {
+    await getCategories()
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    getAllCategories();
+  }, [getAllCategories]);
 
   const itemTemplate = (suggestion) => {
     return (
@@ -64,9 +81,8 @@ export const AddEvent = () => {
               style={{
                 fontSize: ".75rem",
                 color: "var(--text-secondary-color)",
-              }}
-            >
-              @{suggestion.name + " " + suggestion.surname}
+              }}>
+              {suggestion.name + " " + suggestion.surname}
             </small>
           )}
         </span>
@@ -80,52 +96,21 @@ export const AddEvent = () => {
     control,
     formState: { errors },
     handleSubmit,
-    reset,
   } = useForm({ defaultValues });
 
   const onSubmit = async (data) => {
-    const existingArtists = [];
-    const notExistingArtists = [];
-    let artistsList;
-
-    const existingArtistSet = new Set(
-      data.artists.split(" ").map((nickname) => nickname.substring(1))
-    );
-
-    data.artists.split(" ").forEach((nickname) => {
-      const artist = artists.find(
-        (artist) => artist.nickname === nickname.substring(1)
-      );
-
-      if (artist && !existingArtistSet.has(artist.id)) {
-        existingArtists.push(artist.id);
-      } else if (!artist && !notExistingArtists.includes(nickname)) {
-        notExistingArtists.push(nickname);
-      }
-    });
-
-    artistsList = notExistingArtists.map((artist) => {
-      return { nickname: artist.substring(1) };
-    });
-
-    const processArray = async (artistsList) => {
-      for (const artist of artistsList) {
-        try {
-          await addArtist(artist).then((res) => {
-            existingArtists.push(res.data.data.artist.id);
-          });
-        } catch (error) {
-          showError();
-        }
-      }
-    };
-
+    if (data.artists) {
+      const artistsList = data.artists
+        .split(" ")
+        .filter((artist) => artist.startsWith("@"))
+        .map((artist) => ({ nickname: artist.slice(1) }));
+      data.artists = artistsList;
+    }
+    data.category = data.category.id;
     try {
-      await processArray(artistsList);
-      data.artists = existingArtists;
       await addEvent(data).then(() => {
         showSuccess();
-        reset();
+        navigate("/events");
       });
     } catch (error) {
       showError();
@@ -168,6 +153,7 @@ export const AddEvent = () => {
         itemTemplate={itemTemplate}
         suggestions={suggestions}
         onSearch={onSearch}
+        categories={categories}
       />
     </>
   );

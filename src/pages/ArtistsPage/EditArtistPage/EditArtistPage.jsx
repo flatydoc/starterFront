@@ -1,3 +1,9 @@
+import { EditArtist } from "../../../modules/Artists/EditArtist";
+
 export const EditArtistPage = () => {
-  return <div>EditArtistPage</div>;
+  return (
+    <div>
+      <EditArtist />
+    </div>
+  );
 };

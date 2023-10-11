@@ -1,10 +1,10 @@
 import { Registration } from "../../modules/Registration/Registration";
-import styles from "./SignUpPage.module.scss";
+// import classes from "./SignUpPage.module.scss";
 
 export const SignUpPage = () => {
   return (
-    <div className={styles.formPage}>
-      <Registration />
-    </div>
+    // <div className={classes.form}>
+    <Registration />
+    // </div>
   );
 };

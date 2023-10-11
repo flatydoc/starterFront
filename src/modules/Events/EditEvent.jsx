@@ -10,6 +10,7 @@ export const EditEvent = () => {
   const [event, setEvent] = useState();
   const { user } = useContext(AuthContext);
   const { eventId } = useParams();
+  const navigate = useNavigate();
 
   const getEvent = useCallback(async () => {
     await get(eventId)
@@ -28,7 +29,7 @@ export const EditEvent = () => {
   const defaultValues = {
     title: "",
     text: "",
-    poster: "",
+    posterUrl: "",
     date: "",
     time: "",
     tags: [],
@@ -91,7 +92,7 @@ export const EditEvent = () => {
   const deleteEvent = async () => {
     try {
       await removeEvent(eventId).then(() => {
-        // navigate("/");
+        navigate("/events");
       });
     } catch (error) {
       console.log(error);

@@ -3,26 +3,26 @@ import { useForm } from "react-hook-form";
 import { AddArtistForm } from "./components/AddArtistForm";
 import { Toast } from "primereact/toast";
 import { addArtist } from "./core/api/artists.js";
+import { FieldError } from "react-hook-form";
+import { IDefaultValues } from "./core/types/form.types";
 
 export const AddArtist = () => {
-  const defaultValues = {
+  const defaultValues: IDefaultValues = {
     name: "",
     surname: "",
     nickname: "",
     city: "",
+    bio: "",
   };
-
-  const toast = useRef(null);
 
   const {
     control,
     formState: { errors },
     handleSubmit,
-    getValues,
     reset,
-  } = useForm({ defaultValues });
+  } = useForm<IDefaultValues>({ defaultValues });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: IDefaultValues) => {
     try {
       await addArtist(data).then(() => {
         showSuccess();
@@ -34,27 +34,30 @@ export const AddArtist = () => {
     }
   };
 
-  const getFormErrorMessage = (name) => {
-    return errors[name] ? (
-      <small className="p-error">{errors[name].message}</small>
+  const getFormErrorMessage = (name: string): JSX.Element | null => {
+    const error = (errors as Record<string, FieldError>)[name];
+    return error ? (
+      <small className="p-error">{error.message}</small>
     ) : (
       <small className="p-error">&nbsp;</small>
     );
   };
 
-  const showSuccess = () => {
-    toast.current.show({
+  const toast = useRef<Toast | null>(null);
+
+  const showSuccess = (): void => {
+    toast.current?.show({
       severity: "success",
-      summary: "Success",
-      detail: "Some text",
+      summary: "Задача создана",
+      detail: "123",
     });
   };
 
-  const showError = () => {
-    toast.current.show({
+  const showError = (): void => {
+    toast.current?.show({
       severity: "error",
-      summary: "Error",
-      detail: "Error text",
+      summary: "Ошибка",
+      detail: "Повторите попытку позже",
     });
   };
 

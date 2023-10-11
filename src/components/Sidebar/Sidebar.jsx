@@ -4,9 +4,13 @@ import { Menu } from "primereact/menu";
 import styles from "./Sidebar.module.scss";
 import classNames from "classnames";
 import { Button } from "primereact/button";
+import { useContext } from "react";
+import { AuthContext } from "../../core/context/AuthContext";
 
 export const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
   const navigate = useNavigate();
+
+  const { user } = useContext(AuthContext);
 
   const items = [
     {
@@ -19,6 +23,11 @@ export const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
       icon: "pi pi-users",
       command: () => navigate(`/artists`),
     },
+    {
+      label: "My subscriptions",
+      icon: "pi pi-users",
+      command: () => navigate(`/subscriptions`),
+    },
   ];
 
   const sidebarActiveHandler = () => {
@@ -30,8 +39,7 @@ export const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
       className={classNames(styles.sidebarWrapper, {
         [styles.active]: sidebarVisible,
       })}
-      onClick={() => setSidebarVisible(false)}
-    >
+      onClick={() => setSidebarVisible(false)}>
       <aside className={styles.sidebar}>
         <div className={styles.header}>
           <Button

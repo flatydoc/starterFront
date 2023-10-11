@@ -9,8 +9,16 @@ export const get = (id) => {
   return api.get(`/artists/${id}`);
 };
 
+export const getArtistsByUserId = () => {
+  return authApi.get("/artists/getArtistsByUserId");
+};
+
 export const addArtist = (data) => {
   return authApi.post("/artists/add", data);
+};
+
+export const addArtists = (data) => {
+  return authApi.post("/artists/addList", data);
 };
 
 export const editArtist = (data) => {

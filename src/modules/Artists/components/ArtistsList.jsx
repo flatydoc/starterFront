@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Artist } from "./Artist/Artist";
 
-export const ArtistsList = ({ artists }) => {
+const ArtistsList = ({ artists }) => {
   const navigate = useNavigate();
 
   const handleClick = (id) => {
@@ -23,3 +23,5 @@ export const ArtistsList = ({ artists }) => {
 
   return <div>{artistElements}</div>;
 };
+
+export default ArtistsList;
